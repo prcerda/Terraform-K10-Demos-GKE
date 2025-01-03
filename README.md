@@ -13,7 +13,7 @@ This projects demostrates the process of deploying an Google GKE cluster, plus i
 * 2 GKE Cluster in different AZs (Potentially you could set it to run in different regions)
     - Volume Snapshot Class
     - StorageClass
-* Google Cloud Storage Bucket
+* Google Cloud Storage Bucket to be used as Location Profile
 * Kasten in both GKE clusters
     - Basic Authentication
     - Access via LoadBalancer
@@ -85,12 +85,12 @@ For Terraform to work, we need to provide certain information to be used as vari
 | ----------------------- | -------- | ------------------- | -------------------------------------------------------------- |
 | `region01`              | String   | `europe-west2`      | Google Cloud Region where all resources for Cluster01 will be created        |
 | `az01`                  | list(string)   | `["europe-west2-a"]`| Google Cloud Availability Zone where all resources for Cluster01 will be created        |
-| `region02`              | String   | `europe-west2`      | Google Cloud Region where all resources for Cluster01 will be created        |
-| `az02`                  | list(string)   | `["europe-west2-b"]`| Google Cloud Availability Zone where all resources for Cluster01 will be created        |
+| `region02`              | String   | `europe-west2`      | Google Cloud Region where all resources for Cluster02 will be created        |
+| `az02`                  | list(string)   | `["europe-west2-b"]`| Google Cloud Availability Zone where all resources for Cluster02 will be created        |
 | `project`               | String   | `gcp-project-name`  | Google Cloud Project name                            |
-| `cluster_name01`        | String   | `k10cluster1`               | Name of the cluster to be created.  All Google Cloud resources will use the same name  |
-| `cluster_name02`        | String   | `k10cluster2`               | Name of the cluster to be created.  All Google Cloud resources will use the same name  |
-| `gke_num_nodes`         | Number   | `3`                 | Number of GKE Worker nodes to be created  |
+| `cluster_name01`        | String   | `k10cluster1`               | Name of the cluster to be created in Region01.    |
+| `cluster_name02`        | String   | `k10cluster2`               | Name of the cluster to be created in Region02.    |
+| `gke_num_nodes`         | Number   | `3`                 | Number of GKE Worker nodes to be created in each cluster  |
 | `machine_type`          | String   | `e2-standard-2`     | Machine type for GKE Worker nodes  |
 | `subnet_cidr_block_ipv4`| String   | `10.50.0.0/16`      | CIDR for VPC Subnet to be created  |
 | `owner`                 | String   | `patricio_cerda`    | Owner tag in Google Cloud            |
@@ -99,7 +99,7 @@ For Terraform to work, we need to provide certain information to be used as vari
 
 
 
-### Building the GKE Cluster with Kasten
+## Building the GKE Cluster with Kasten
 Once the variables are set, the only thing we need to do is to apply the Terraform files:
 - By using a terminal, go to the folder containing all terraform files adn folders.
 - Run the following commands
@@ -108,33 +108,33 @@ terraform -chdir=basic init
 terraform -chdir=basic apply
 ```
 
-## Using the Google GKE cluster and Kasten
+### Using the Google GKE cluster and Kasten
 Once Terraform is done building the infrastructure and installing Kasten, you will get the following information:
 
 | Name                    | Value       | Description                                                    |
 | ----------------------- | ----------- | -------------------------------------------------------------- |
-| `gke_cluster_name_01  `        | `gke-k10-1719243246`         | Name of the Google GKE cluster created, with a random number to prevent conflicts               |
-| `gke_cluster_name_02  `        | `gke-k10-1719243246`         | Name of the Google GKE cluster created, with a random number to prevent conflicts               |
+| `gke_cluster_name_01  `        | `gke-k10-1719243246`         | Name of the Google GKE cluster in Region01 created, with a random number to prevent conflicts               |
+| `gke_cluster_name_02  `        | `gke-k10-1719243246`         | Name of the Google GKE cluster in Region02 created, with a random number to prevent conflicts               |
 | `app_k10app_url`           | `http://34.142.124.14`              | URL to access the demo Stock app        |
 | `app_pacman_url`           | `http://34.142.124.15`              | URL to access the demo Pacman app        |
-| `k10_password `               | `Veeam123!/`    | URL to access the Kasten K10 Dashboard  |
-| `k10_username `               | `admin`    | URL to access the Kasten K10 Dashboard  |
-| `k10url_gke01 `               | `http://34.147.149.221/k10/`    | URL to access the Kasten K10 Dashboard  |
-| `k10url_gke02 `               | `http://34.147.149.222/k10/`    | URL to access the Kasten K10 Dashboard  |
-| `kubeconfig_gke01`            | `gcloud container clusters get-credentials gke-k10-1719243246 --region europe-west2-a` | Command to configure the kubeconfig file and access the kubernetes cluster with kubectl  |
-| `kubeconfig_gke02`            | `gcloud container clusters get-credentials gke-k10-1719243247 --region europe-west2-b` | Command to configure the kubeconfig file and access the kubernetes cluster with kubectl  |
+| `k10_password `               | `Veeam123!/`    | Password for Kasten admin user |
+| `k10_username `               | `admin`    | Kasten admin username  |
+| `k10url_gke01 `               | `http://34.147.149.221/k10/`    | URL to access the Kasten K10 Dashboard in Cluster01  |
+| `k10url_gke02 `               | `http://34.147.149.222/k10/`    | URL to access the Kasten K10 Dashboard in Cluster02  |
+| `kubeconfig_gke01`            | `gcloud container clusters get-credentials gke-k10-1719243246 --region europe-west2-a` | Command to configure the kubeconfig file and access the kubernetes cluster01 with kubectl  |
+| `kubeconfig_gke02`            | `gcloud container clusters get-credentials gke-k10-1719243247 --region europe-west2-b` | Command to configure the kubeconfig file and access the kubernetes cluster02 with kubectl  |
 
 At this point, it's possible to run tests to backup and restore the demo App, creating policies.
 
 ![Kasten Dashboard](kasten-basic.png)	
 
-## Destroying the GKE Cluster with Kasten
+### Destroying the GKE Cluster with Kasten
 Once you are done using the GKE cluster, you can destroy it alonside all other resources created with Terraform, by using the following command:
 ```
 terraform -chdir=basic destroy
 ```
 
-### Advanced Kasten configuration
+## Advanced Kasten configuration
 The only thing we need to do is to apply the Terraform files:
 - By using a terminal, go to the folder containing all terraform files and folders.
 - Run the following commands
@@ -142,7 +142,7 @@ The only thing we need to do is to apply the Terraform files:
 terraform -chdir=advanced init
 terraform -chdir=advanced apply
 ```
-## Using the Google GKE cluster and Kasten
+### Using the Google GKE cluster and Kasten
 Once Terraform is done configuring additional Kasten features, you will get the following information:
 
 | Name                    | Value       | Description                                                    |

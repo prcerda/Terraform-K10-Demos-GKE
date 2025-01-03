@@ -1,5 +1,5 @@
 # GCP Settings
-project   = "se-emea-sandbox"
+project   = "gcp-project-name"
 
 # AZ1 Settings
 region01    = "europe-west2"
