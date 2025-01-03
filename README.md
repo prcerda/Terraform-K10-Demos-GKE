@@ -78,7 +78,7 @@ gcloud components install gke-gcloud-auth-plugin
 5. Download all terraform files and keep them locally, all in the same folder in your laptop.
 
 
-## Installing GKE Cluster and Kasten
+## Installing GKE Cluster and Basic Kasten Configuration
 For Terraform to work, we need to provide certain information to be used as variables in the **terraform.tfvars** file.   
 
 | Name                    | Type     | Default value       | Description                                                    |
@@ -99,7 +99,7 @@ For Terraform to work, we need to provide certain information to be used as vari
 
 
 
-## Building the GKE Cluster with Kasten
+### Building the GKE Cluster with Kasten
 Once the variables are set, the only thing we need to do is to apply the Terraform files:
 - By using a terminal, go to the folder containing all terraform files adn folders.
 - Run the following commands
